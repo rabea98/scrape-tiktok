@@ -1,0 +1,61 @@
+Python has many libraries preinstalled but they first have to be imported.
+You can either import the whole library (import math) or just some parts of the lib.
+(This is shown well in the tutorial from Binfluencer and more detailed)
+
+
+You can get input from a user with input(). You can add text as an argument that will
+be printed when the program reads this line. You can specify the data type of 
+a variable or an input using int(), str(), float(), bool() (bool wouldn't really be
+an input. It's a datatype mostly used for if statements or while cycles)
+(whole numbers, text, decimalnumbers, true/false). If you don't specify python will
+decide itself. However for example input() will be defaultly a string no mater what the user inserts
+(This can ofcourse be parsed for example like this x = int(input("Insert first number:")) ).
+
+You can comment single line using # or multiple lines using """ """
+
+You can print string in a variable along with more text using "," or "+"
+
+Python has lists and tuples. List are ordered and changeable. Tuples are ordered
+and unchangeable. You can select a single value from a list or a tuple using their 
+index. Indexes always start from a 0. So printing thislist[0] will print "apple".
+
+for is one of cycles that python has. The example that is in the code says:
+For every e in thislist print e. The for cycle creates the variable e and inserts
+the first value in thislist into it. Then it runs whatever code you have inside the cycle
+And repeats this cycle with every value in thislist. If you give a for cycle a string
+it will insert chars (char = single symbol) into the newly created variable (in the
+example with ThisIsAlsoString the variable i)
+
+Newlines can be created by printing "\n"
+
+In python (and most other scripting/programing languages a single "=" is for defining 
+variables and double "=" is for comparing. if x == y is saying if x is the same as y.
+This will work even when comparing any datatype)
+
+A while cycle repeats until something is true. In this example while u is smaller or equal
+to 5 print "U is ..." and raise u by 1. Once u == 5 the statement is no longer true 
+and so it will stop repeating. If the statement will end up being always true the while
+cycle will loop.
+
+You can define your own function using 
+def nameofyourfuntion(arguments for the function):
+	body of the funtion
+
+You have to be careful so your funtion doesn't have the same name as other function 
+(for example you can't name your funtion print). Arguments are a way of passing values
+to the funtion (functions don't require arguments). Variables inside the function aren't
+seen outside of it.
+
+
+IMPORTANT!
+Python unlike other languages doesn't use semicolons to end lines of code and curly brackets
+to mark where does (for example) an if statement start and where does it end. a command has 
+to be in a single line anything seperated for it isn't recodnised as a part of it.
+Curly brackets are replaced by simple spacing.In older versions of python
+this can bring giant trouble because a single space wrong will give you an error.
+You can see this in the if statement or the for 
+cycle. This can be a problem if you press space by a mistake and end up having wrong 
+spacing because it can be really difficult to find.
+Even though it is fixed you should make sure that you write it right.
+Python will automaticaly make space it when going on a new line after writing 
+something ending with a double dot (":").
