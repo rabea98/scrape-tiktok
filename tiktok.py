@@ -10,8 +10,12 @@ class TiktokSpider(scrapy.Spider):
 
     def parse(self, response):
         yield {
-            'ChannelName': response.css('h1.share-title::text').extract()
+            'ChannelName': response.css('h1.share-title::text').extract(),
+            'UserName': response.css('h1.share-sub-title::text').extract(),
+            'FollowingCount': response.css("h2.count-infos span.number[title='Following']::text").extract(),
+            'FollowerCount': response.css("h2.count-infos span.number[title='Followers']::text").extract(),
+            'ChannelDescription': response.css('h2.share-desc::text').extract(),
         }
 
 
-    
+
