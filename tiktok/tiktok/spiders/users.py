@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
-
+import json
 
 class UsersSpider(scrapy.Spider):
 	name = 'users'
@@ -10,9 +10,12 @@ class UsersSpider(scrapy.Spider):
 
 	def parse(self, response):
 		yield {
-			'ChannelName': response.css('h1.share-title::text').extract(),
-			'UserName': response.css('h1.share-sub-title::text').extract(),
-			'FollowingCount': response.css("h2.count-infos span.number[title='Following']::text").extract(),
-			'FollowerCount': response.css("h2.count-infos span.number[title='Followers']::text").extract(),
-			'ChannelDescription': response.css('h2.share-desc::text').extract(),
+			'ChannelName': json.loads(response.css('script#__NEXT_DATA__::text')[0].re('.*')[0])['props']['pageProps']['userData']['uniqueId'],
+			'Nickname': json.loads(response.css('script#__NEXT_DATA__::text')[0].re('.*')[0])['props']['pageProps']['userData']['nickName'],
+			'FollowingCount': json.loads(response.css('script#__NEXT_DATA__::text')[0].re('.*')[0])['props']['pageProps']['userData']['following'],
+			'FollowerCount': json.loads(response.css('script#__NEXT_DATA__::text')[0].re('.*')[0])['props']['pageProps']['userData']['fans'],
+			'ChannelDescription': json.loads(response.css('script#__NEXT_DATA__::text')[0].re('.*')[0])['props']['pageProps']['userData']['signature'],
+			'VideoCount' : json.loads(response.css('script#__NEXT_DATA__::text')[0].re('.*')[0])['props']['pageProps']['userData']['video'],
+			'TotalLikes' : json.loads(response.css('script#__NEXT_DATA__::text')[0].re('.*')[0])['props']['pageProps']['userData']['heart'],
+			'Verified' : json.loads(response.css('script#__NEXT_DATA__::text')[0].re('.*')[0])['props']['pageProps']['userData']['verified'],
 		}
