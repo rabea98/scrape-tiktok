@@ -13,11 +13,10 @@ class MongoDBPipeline(object):
 
 	def __init__(self):
 		settings = get_project_settings() 
-		connection = MongoClient(
-		    settings['MONGODB_SERVER'],
-		    settings['MONGODB_PORT'])
-		db = connection[settings['MONGODB_DB']]
-		self.collection = db[settings['MONGODB_COLLECTION']]
+		connection = MongoClient("mongodb+srv://user:pass@tiktok-ycelo.mongodb.net/test?retryWrites=true&w=majority")
+		db = connection.get_database('tiktok')
+		self.collection = db.users
+		
 
 	def process_item(self, item, spider):
 		valid = True
@@ -26,5 +25,9 @@ class MongoDBPipeline(object):
 				valid = False
 				raise DropItem("Missing {0}!".format(data))
 		if valid:
-			self.collection.insert(dict(item))
+			inserted = False
+			if self.collection.find({'ChannelName': dict(item)['ChannelName']}).limit(1).count() > 0:
+				inserted = True	
+			if not inserted:
+				self.collection.insert(dict(item))
 		return item
