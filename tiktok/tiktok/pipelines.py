@@ -25,9 +25,17 @@ class MongoDBPipeline(object):
 				valid = False
 				raise DropItem("Missing {0}!".format(data))
 		if valid:
-			inserted = False
-			if self.collection.find({'ChannelName': dict(item)['ChannelName']}).limit(1).count() > 0:
-				inserted = True	
-			if not inserted:
+			inserted = self.collection.find({'ChannelName': dict(item)['ChannelName']}).limit(1).count()
+			if inserted > 0:
+				query = {'ChannelName': dict(item)['ChannelName']}
+				newvalues = {'$set':{
+								'FollowingCount': dict(item)['FollowingCount'],
+								'FollowerCount': dict(item)['FollowerCount'],
+								'ChannelDescription': dict(item)['ChannelDescription'],
+								'VideoCount': dict(item)['VideoCount'],
+								'TotalLikes': dict(item)['TotalLikes'],
+								'Verified': dict(item)['Verified']}}
+				self.collection.update(query,newvalues)
+			else:
 				self.collection.insert(dict(item))
 		return item
