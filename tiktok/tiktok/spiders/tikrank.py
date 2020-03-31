@@ -5,21 +5,14 @@ import json
 
 class TikrankSpider(scrapy.Spider):
     name = 'tikrank'
-    start_urls = ['https://tikrank.com/tiktok-influencer-rank/top-100-influencer-in-tiktok-sorted-by-video-viewing-weekly']
-    base_url = 'https://tikrank.com'
+    start_urls = ['https://tikrank.com/influencer/influencers?page_num=1&page_size=10&sorted_by=followers&country=DE&fans_count=0&keyword=&order=desc']
     
     def parse(self, response):
-        tbody = response.css('tbody')[0]
-        links = tbody.css('a::attr(href)').extract()
-        for link in links:
-            next_page_url = self.base_url + link
-            yield scrapy.Request(url=next_page_url, callback=self.parse_details)
+        people = response.text
+        parsed = json.loads(people)["data"]["kols"]
+        for person in parsed:
+            print(person["kol_unique_id"])
+        yield None
 
-    def parse_details(self, response):
-        userinfo = json.loads(response.text)
-        data = userinfo["data"]
-        username = data["platform_unique_id"]
-        yield {
-            'username': username
-        }
-        
+
+#Second page
