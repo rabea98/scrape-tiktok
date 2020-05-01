@@ -44,44 +44,48 @@ class UsersSpider(scrapy.Spider):
                     'Verified' :  data['userData']['verified'],
                     'Country': country})
     def parse_user_media(self, response):
-        items = json.loads(response.text)['items']
-        userVideos = []
-        for item in items:
-            try:
-                textExtra = item['textExtra']
-            except KeyError:
-                textExtra = []
+        userContent = json.loads(response.text)
+        if 'items' not in userContent:
+            yield None
+        else:
+            items = userContent['items']
+            userVideos = []
+            for item in items:
+                try:
+                    textExtra = item['textExtra']
+                except KeyError:
+                    textExtra = []
 
-            userVideos.append({
-                'Description': {
-                    'DescText': item['desc'],
-                    'Duration': item['video']['duration'],
-                },
-                'Music': {
-                    'Author': item['music']['authorName'],
-                    'Title': item['music']['title'],
-                    'MusicUrl': item['music']['playUrl'],
-                    'MusicOriginal': item['music']['original']
-                },
-                'Hashtags': textExtra,
-                'Stats': {
-                    'LikesCount': item['stats']['diggCount'],
-                    'ShareCount': item['stats']['shareCount'],
-                    'CommentsCount': item['stats']['commentCount'],
-                    'ViewsCount': item['stats']['playCount']
+                userVideos.append({
+                    'Description': {
+                        'DescText': item['desc'],
+                        'Duration': item['video']['duration'],
+                    },
+                    'Music': {
+                        'Author': item['music']['authorName'],
+                        'Title': item['music']['title'],
+                        'MusicUrl': item['music']['playUrl'],
+                        'MusicOriginal': item['music']['original']
+                    },
+                    'Hashtags': textExtra,
+                    'Stats': {
+                        'LikesCount': item['stats']['diggCount'],
+                        'ShareCount': item['stats']['shareCount'],
+                        'CommentsCount': item['stats']['commentCount'],
+                        'ViewsCount': item['stats']['playCount']
+                    }
+                })
+            yield {
+                'ChannelName': response.meta['ChannelName'],
+                'Nickname': response.meta['ChannelName'],
+                'FollowingCount':  response.meta['FollowingCount'],
+                'FollowerCount':  response.meta['FollowerCount'],
+                'ChannelDescription':  response.meta['ChannelDescription'],
+                'VideoCount' :  response.meta['VideoCount'],
+                'TotalLikes' :  response.meta['TotalLikes'], 
+                'Verified' :  response.meta['Verified'],
+                'Country': response.meta['Country'],
+                'VideosInfo': userVideos
                 }
-            })
-        yield {
-            'ChannelName': response.meta['ChannelName'],
-            'Nickname': response.meta['ChannelName'],
-            'FollowingCount':  response.meta['FollowingCount'],
-            'FollowerCount':  response.meta['FollowerCount'],
-            'ChannelDescription':  response.meta['ChannelDescription'],
-            'VideoCount' :  response.meta['VideoCount'],
-            'TotalLikes' :  response.meta['TotalLikes'], 
-            'Verified' :  response.meta['Verified'],
-            'Country': response.meta['Country'],
-            'VideosInfo': userVideos
-            }
 
 
