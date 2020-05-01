@@ -34,8 +34,10 @@ class MongoDBPipeline(object):
 								'ChannelDescription': dict(item)['ChannelDescription'],
 								'VideoCount': dict(item)['VideoCount'],
 								'TotalLikes': dict(item)['TotalLikes'],
-								'Verified': dict(item)['Verified']}}
+								'Verified': dict(item)['Verified'],
+								'VideosInfo': dict(item)['VideosInfo']}}
 				self.collection.update(query,newvalues)
 			else:
 				self.collection.insert(dict(item))
 		return item
+
