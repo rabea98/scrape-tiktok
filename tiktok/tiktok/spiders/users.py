@@ -27,10 +27,12 @@ class UsersSpider(scrapy.Spider):
                 country = 'Spain'
             else:
                 country = 'France'
-            
+            # Generating user media singature using nodeJS browser.js script. Script is called using Naked lib
+            #https://m.tiktok.com/api/item_list/?count=20&id=24708389&type=1&maxCursor=0&minCursor=0&sourceType=8&appId=1233&region=ES&language=es&verifyFp=&_signature=
             userMediaLink = "https://m.tiktok.com/api/item_list/?count=60&id=" + data['userData']['userId'] + "&type=1&secUid=" + data['userData']['secUid'] + "&maxCursor=0&minCursor=0&sourceType=8&appId=1233&region=ES&language=es&verifyFp="
-            userMediaSignature = muterun_js('..\\..\\tiktok-signature-master\\browser.js', '"' + userMediaLink + '"')   # TODO get correct absolute path to the script
+            userMediaSignature = muterun_js('C:\\Users\\mroma\\Desktop\\tiktok\\tiktok-signature-master\\browser.js', '"' + userMediaLink + '"')   # TODO get correct absolute path to the script
             if userMediaSignature.exitcode == 0:
+            # Calling method get_media_data and passing some meta data
                 yield scrapy.Request(userMediaLink + "&_signature=" + userMediaSignature.stdout.decode("utf-8"), 
                     callback=self.parse_user_media, 
                     meta={
@@ -45,28 +47,42 @@ class UsersSpider(scrapy.Spider):
                     'Country': country})
     def parse_user_media(self, response):
         userContent = json.loads(response.text)
+        userVideos = []
         if 'items' not in userContent:
-            yield None
+            yield {
+                'ChannelName': response.meta['ChannelName'],
+                'Nickname': response.meta['ChannelName'],
+                'FollowingCount':  response.meta['FollowingCount'],
+                'FollowerCount':  response.meta['FollowerCount'],
+                'ChannelDescription':  response.meta['ChannelDescription'],
+                'VideoCount' :  response.meta['VideoCount'],
+                'TotalLikes' :  response.meta['TotalLikes'], 
+                'Verified' :  response.meta['Verified'],
+                'Country': response.meta['Country'],
+                'VideosInfo': userVideos
+                }
         else:
             items = userContent['items']
-            userVideos = []
             for item in items:
                 try:
                     textExtra = item['textExtra']
                 except KeyError:
                     textExtra = []
-
+                try:
+                    musicInfo = {
+                        'Author': item['music']['authorName'],
+                        'Title': item['music']['title'],
+                        'MusicUrl': item['music']['playUrl'],
+                        'MusicOriginal': item['music']['original']  
+                    }
+                except KeyError:
+                    musicInfo = {}
                 userVideos.append({
                     'Description': {
                         'DescText': item['desc'],
                         'Duration': item['video']['duration'],
                     },
-                    'Music': {
-                        'Author': item['music']['authorName'],
-                        'Title': item['music']['title'],
-                        'MusicUrl': item['music']['playUrl'],
-                        'MusicOriginal': item['music']['original']
-                    },
+                    'Music': musicInfo,
                     'Hashtags': textExtra,
                     'Stats': {
                         'LikesCount': item['stats']['diggCount'],
@@ -87,5 +103,3 @@ class UsersSpider(scrapy.Spider):
                 'Country': response.meta['Country'],
                 'VideosInfo': userVideos
                 }
-
-
