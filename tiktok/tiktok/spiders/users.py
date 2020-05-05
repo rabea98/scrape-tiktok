@@ -30,7 +30,7 @@ class UsersSpider(scrapy.Spider):
             # Generating user media singature using nodeJS browser.js script. Script is called using Naked lib
             #https://m.tiktok.com/api/item_list/?count=20&id=24708389&type=1&maxCursor=0&minCursor=0&sourceType=8&appId=1233&region=ES&language=es&verifyFp=&_signature=
             userMediaLink = "https://m.tiktok.com/api/item_list/?count=60&id=" + data['userData']['userId'] + "&type=1&secUid=" + data['userData']['secUid'] + "&maxCursor=0&minCursor=0&sourceType=8&appId=1233&region=ES&language=es&verifyFp="
-            userMediaSignature = muterun_js('C:\\Users\\mroma\\Desktop\\tiktok\\tiktok-signature-master\\browser.js', '"' + userMediaLink + '"')   # TODO get correct absolute path to the script
+            userMediaSignature = muterun_js('..\\..\\tiktok-signature-master\\browser.js', '"' + userMediaLink + '"')   # TODO get correct absolute path to the script
             if userMediaSignature.exitcode == 0:
             # Calling method get_media_data and passing some meta data
                 yield scrapy.Request(userMediaLink + "&_signature=" + userMediaSignature.stdout.decode("utf-8"), 
